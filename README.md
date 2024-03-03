@@ -1077,7 +1077,7 @@ Console.WriteLine(phone.state.Go());
 
 ### 5. Strategy
 
-Purpose: Decouple strategical responsibility in a class method.
+Purpose: Decouple strategical responsibilities in a class method.
 
 C# Code:
 ```
