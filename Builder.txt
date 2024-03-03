@@ -1,0 +1,106 @@
+Builder:
+
+Purpose: Break down complex object constructor. Make it step by step.
+
+C# Code:
+
+namespace DesignPattern
+{
+    class CellPhone
+    {
+        private string brand;
+        private string os;
+        private string processor;
+        private double screenSize;
+        private int battery;
+        private int camera;
+
+        public CellPhone(string brand, string os, string processor, double screenSize, int battery, int camera)
+        {
+            this.brand = brand;
+            this.os = os;
+            this.processor = processor;
+            this.screenSize = screenSize;
+            this.battery = battery;
+            this.camera = camera;
+        }
+
+        public void Print()
+        {
+            Console.WriteLine(brand + " " + os + " " + processor + " " + screenSize + " " + battery + " " + camera);
+        }
+    }
+
+    interface ICellPhoneBuilder
+    {
+        CellPhone GetCellPhone();
+        ICellPhoneBuilder SetOs(string os);
+        ICellPhoneBuilder SetProcessor(string processor);
+        ICellPhoneBuilder SetScreenSize(double screenSize);
+        ICellPhoneBuilder SetBattery(int battery);
+        ICellPhoneBuilder SetCamera(int camera);
+    }
+
+    class SamsungCellPhoneBuilder : ICellPhoneBuilder
+    {
+        private string brand = "Samsung";
+        private string os;
+        private string processor;
+        private double screenSize;
+        private int battery;
+        private int camera;
+
+        public CellPhone GetCellPhone()
+        {
+            return new CellPhone(brand,  os, processor, screenSize, battery, camera);
+        }
+        ICellPhoneBuilder ICellPhoneBuilder.SetOs(string os) { this.os = os; return this; }
+        ICellPhoneBuilder ICellPhoneBuilder.SetProcessor(string processor) { this.processor = processor; return this; }
+        ICellPhoneBuilder ICellPhoneBuilder.SetScreenSize(double screenSize) { this.screenSize = screenSize; return this; }
+        ICellPhoneBuilder ICellPhoneBuilder.SetBattery(int battery) { this.battery = battery; return this; }
+        ICellPhoneBuilder ICellPhoneBuilder.SetCamera(int camera) { this.camera = camera; return this; }
+    }
+
+    class AppleCellPhoneBuilder : ICellPhoneBuilder
+    {
+        private string brand = "Apple";
+        private string os;
+        private string processor;
+        private double screenSize;
+        private int battery;
+        private int camera;
+
+        public CellPhone GetCellPhone()
+        {
+            return new CellPhone(brand, os, processor, screenSize, battery, camera);
+        }
+        ICellPhoneBuilder ICellPhoneBuilder.SetOs(string os) { this.os = os; return this; }
+        ICellPhoneBuilder ICellPhoneBuilder.SetProcessor(string processor) { this.processor = processor; return this; }
+        ICellPhoneBuilder ICellPhoneBuilder.SetScreenSize(double screenSize) { this.screenSize = screenSize; return this; }
+        ICellPhoneBuilder ICellPhoneBuilder.SetBattery(int battery) { this.battery = battery; return this; }
+        ICellPhoneBuilder ICellPhoneBuilder.SetCamera(int camera) { this.camera = camera; return this; }
+    }
+
+    static class Director
+    {
+        public static CellPhone ConstructSamsungCellPhone()
+        {
+            ICellPhoneBuilder builder = new SamsungCellPhoneBuilder();
+            return builder.SetCamera(120).SetProcessor("INTEL").GetCellPhone(); 
+        }
+
+        public static CellPhone ConstructAppleCellPhone()
+        {
+            ICellPhoneBuilder builder = new AppleCellPhoneBuilder();
+            return builder.SetCamera(20).SetOs("IOS").GetCellPhone();
+        }
+    }
+}
+
+using DesignPattern;
+
+CellPhone cellPhone1 = Director.ConstructSamsungCellPhone();
+CellPhone cellPhone2 = Director.ConstructAppleCellPhone();
+
+cellPhone1.Print();
+cellPhone2.Print();

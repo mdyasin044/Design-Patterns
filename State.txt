@@ -1,0 +1,125 @@
+State:
+
+Purpose: Transition between different states of an object in a class. 
+
+C# Code: (A = B = C = A)
+
+namespace DesignPattern
+{
+    public class Phone
+    {
+        public State state;
+
+        public Phone()
+        {
+            this.state = new StateA(this);
+        }
+
+        public void SetState(State state)
+        {
+            this.state = state;
+        }
+
+        public string GetMessageForGo()
+        {
+            return state.GetStateName() + " Go done.";
+        }
+
+        public string GetMessageForBack()
+        {
+            return state.GetStateName() + " Back done.";
+        }
+    }
+
+    public abstract class State
+    {
+        protected string stateName;
+        protected Phone phone;
+
+        public State(string stateName, Phone phone)
+        {
+            this.phone = phone;
+            this.stateName = stateName;
+        }
+
+        public string GetStateName()
+        {
+            return stateName;
+        }
+        public abstract string Go();
+        public abstract string Back();
+    }
+
+    public class StateA : State
+    {
+        public StateA(Phone phone) : base("A", phone)
+        {
+
+        }
+
+        public override string Back()
+        {
+            phone.SetState(new StateC(phone));
+            return phone.GetMessageForBack();
+        }
+
+        public override string Go()
+        {
+            phone.SetState(new StateB(phone));
+            return phone.GetMessageForGo();
+        }
+    }
+
+    public class StateB : State
+    {
+        public StateB(Phone phone) : base("B", phone)
+        {
+
+        }
+
+        public override string Back()
+        {
+            phone.SetState(new StateA(phone));
+            return phone.GetMessageForBack();
+        }
+
+        public override string Go()
+        {
+            phone.SetState(new StateC(phone));
+            return phone.GetMessageForGo();
+        }
+    }
+
+    public class StateC : State
+    {
+        public StateC(Phone phone) : base("C", phone)
+        {
+
+        }
+
+        public override string Back()
+        {
+            phone.SetState(new StateB(phone));
+            return phone.GetMessageForBack();
+        }
+
+        public override string Go()
+        {
+            phone.SetState(new StateA(phone));
+            return phone.GetMessageForGo();
+        }
+    }
+}
+
+
+using DesignPattern;
+
+Phone phone = new Phone();
+Console.WriteLine(phone.GetMessageForGo());
+Console.WriteLine(phone.state.Go());
+Console.WriteLine(phone.state.Go());
+Console.WriteLine(phone.state.Back());
+Console.WriteLine(phone.state.Go());
+Console.WriteLine(phone.state.Go());
+Console.WriteLine(phone.state.Go());
+Console.WriteLine(phone.state.Go());

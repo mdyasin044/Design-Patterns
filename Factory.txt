@@ -1,0 +1,55 @@
+Factory:
+
+Purpose: Provide instance from factory according to user preferences.
+
+C# Code: 
+
+namespace DesignPattern
+{
+    interface iPizza
+    {
+        void Eat();
+    }
+
+    class VegPizza : iPizza
+    {
+        public void Eat()
+        {
+            Console.WriteLine("Eating veg pizza...");
+        }
+    }
+
+    class NonVegPizza : iPizza
+    {
+        public void Eat()
+        {
+            Console.WriteLine("Eating non veg pizza...");
+        }
+    }
+
+    enum PizzaType
+    {
+        Veg, 
+        NonVeg
+    }
+
+    class Waiter
+    {
+        public iPizza GetPizza(PizzaType type)
+        {
+            switch (type)
+            {
+                case PizzaType.Veg: return new VegPizza();
+                case PizzaType.NonVeg: return new NonVegPizza();
+            }
+
+            return null;
+        }
+    }
+}
+
+using DesignPattern;
+
+Waiter waiter = new Waiter();
+iPizza pizza = waiter.GetPizza(PizzaType.NonVeg); //Get non veg pizza instance
+pizza.Eat();

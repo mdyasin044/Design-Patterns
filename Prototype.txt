@@ -1,0 +1,53 @@
+Prototype:
+
+Purpose: Deep clone and equality check
+
+C# Code:
+
+namespace DesignPattern
+{
+    class Prototype1 : ICloneable, IEquatable<Prototype1>
+    {
+        public Prototype2 prototype2 = new();
+        public object Clone()
+        {
+            Prototype1 prototype1 = (Prototype1)this.MemberwiseClone();
+            prototype1.prototype2 = (Prototype2)prototype2.Clone();
+            return prototype1;
+        }
+
+        public bool Equals(Prototype1? other)
+        {
+            if(other == null) return false;
+            if(other.prototype2.Equals(this.prototype2)) return false;
+            return true;
+        }
+    }
+
+    class Prototype2 : ICloneable, IEquatable<Prototype2>
+    {
+        public string name;
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
+        public bool Equals(Prototype2? other)
+        {
+            if (other == null || name != other.name) return false;
+            return true;
+        }
+    }
+}
+
+using DesignPattern;
+
+Prototype1 prototype11 = new Prototype1();
+prototype11.prototype2.name = "RAFIQ";
+
+Prototype1 prototype12 = (Prototype1)prototype11.Clone();
+prototype11.prototype2.name = "KARIM";
+
+//Both will print different names as they are different object.
+Console.WriteLine(prototype11.prototype2.name);
+Console.WriteLine(prototype12.prototype2.name);

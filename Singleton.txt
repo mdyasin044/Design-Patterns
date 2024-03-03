@@ -1,0 +1,51 @@
+Singleton:
+
+Purpose: Avoid multiple instance of a class.
+
+C# Code:
+
+namespace DesignPattern
+{
+    class Singleton
+    {
+        private static Singleton Instance;
+        private static object locker = new object(); //Locker for blocking multithread to create multi instances of the class
+
+        private string name;
+        private Singleton(string name)  //Private Constructor to avoid declare object of the class
+        {
+            this.name = name;
+        }
+        public static Singleton GetInstance(string name)
+        {
+            if (Instance == null)  //Double null checking for multithreads
+                                   //Threads dont need to be locked if instance is not null
+            {
+                lock (locker)
+                {
+                    if (Instance == null)
+                    {
+                        Instance = new Singleton(name);
+                    }
+                }
+            }
+
+            return Instance;
+        }
+
+        public string GetName()
+        {
+            return name;
+        }
+    }
+}
+
+
+using DesignPattern;
+
+Singleton ob1 = Singleton.GetInstance("RAFIQ");
+Singleton ob2 = Singleton.GetInstance("KARIM");
+
+//Both will print RAFIQ as instance creation is done once
+Console.WriteLine(ob1.GetName());
+Console.WriteLine(ob2.GetName());

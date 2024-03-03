@@ -1,0 +1,93 @@
+Strategy:
+
+Purpose: Decouple strategical responsibility in a class method.
+
+C# Code:
+
+namespace DesignPattern
+{
+    public interface PaymentStrategy
+    {
+        void CollectPaymentDetails();
+        bool ValidatePaymentDetails();
+        void Pay(int amount);
+    }
+    public class PaymentByCreditCard : PaymentStrategy
+    {
+        private string creaditCardNumber;
+
+        public PaymentByCreditCard(string creaditCardNumber)
+        {
+            this.creaditCardNumber = creaditCardNumber;
+        }
+
+        public void CollectPaymentDetails()
+        {
+            Console.WriteLine("CreaditCardDetails entered.");
+        }
+
+        public bool ValidatePaymentDetails()
+        {
+            Console.WriteLine("CreditCardDetails validated.");
+            return true;
+        }
+
+        public void Pay(int amount)
+        {
+            Console.WriteLine("Payment done " +  amount + " taka.");
+        }
+    }
+
+    public class PaymentByPaypal : PaymentStrategy
+    {
+        private string paypalNumber;
+
+        public PaymentByPaypal(string paypalNumber)
+        {
+            this.paypalNumber = paypalNumber;
+        }
+
+        public void CollectPaymentDetails()
+        {
+            Console.WriteLine("PaypalDetails entered.");
+        }
+
+        public bool ValidatePaymentDetails()
+        {
+            Console.WriteLine("PaypalDetails validated.");
+            return true;
+        }
+
+        public void Pay(int amount)
+        {
+            Console.WriteLine("Payment done " + amount + " taka.");
+        }
+    }
+
+    public class PaymentService
+    {
+        private int cost;
+        private PaymentStrategy strategy;
+
+        public void SetPaymentInfo(int cost, PaymentStrategy strategy)
+        {
+            this.cost = cost;
+            this.strategy = strategy;
+        }
+
+        public void ProcessOrder()
+        {
+            strategy.CollectPaymentDetails();
+            if(strategy.ValidatePaymentDetails())
+            {
+                strategy.Pay(cost);
+            }
+        }
+    }
+}
+
+using DesignPattern;
+
+PaymentService service = new PaymentService();
+service.SetPaymentInfo(100, new PaymentByPaypal("123"));
+service.ProcessOrder();

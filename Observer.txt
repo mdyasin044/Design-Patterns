@@ -1,0 +1,96 @@
+Observer:
+
+Purpose: Update all subscribers to a particular event that they has already subscribed in.
+
+C# Code:
+
+namespace DesignPattern
+{
+    public interface IListener
+    {
+        public void Update();
+    }
+    public class EmailMessageListener : IListener
+    {
+        private string email;
+
+        public EmailMessageListener(string email)
+        {
+            this.email = email;
+        }
+
+        public void Update()
+        {
+            Console.WriteLine("Email sent to " + email);
+        }
+    }
+
+    public class MobileCallListener : IListener
+    {
+        private string mobile;
+
+        public MobileCallListener(string mobile)
+        {
+            this.mobile = mobile;
+        }
+
+        public void Update()
+        {
+            Console.WriteLine("Call sent to " + mobile);
+        }
+    }
+
+    public class NotificationService
+    {
+        private List<IListener> listeners;
+
+        public NotificationService()
+        {
+            listeners = new List<IListener>();
+        }
+
+        public void Subscribe(IListener listener)
+        {
+            listeners.Add(listener);
+        }
+        
+        public void Unsubscribe(IListener listener)
+        {
+            listeners.Remove(listener);
+        }
+
+        public void Notify()
+        {
+            listeners.ForEach(listener => listener.Update());
+        }
+    }
+
+    public class Store
+    {
+        private NotificationService service;
+
+        public Store()
+        {
+            service = new NotificationService();
+        }
+
+        public void NewItemPromotion()
+        {
+            service.Notify();
+        }
+
+        public NotificationService GetNotificationService()
+        {
+            return service;
+        }
+    }
+}
+
+
+using DesignPattern;
+
+Store store = new Store();
+store.GetNotificationService().Subscribe(new EmailMessageListener("RAFIQ"));
+store.GetNotificationService().Subscribe(new EmailMessageListener("KARIM"));
+store.GetNotificationService().Subscribe(new MobileCallListener("123"));
+store.NewItemPromotion();

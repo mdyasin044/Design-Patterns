@@ -1,0 +1,12 @@
+Composite:
+
+
+Suppose there is a root folder which has many folders and files. All folders can have subfolders and files. 
+If root folder size has to be determined, All its folder and file class should implement IFileSystemElement 
+interface.
+
+interface IFileSystemElement {
+	int GetSize();
+}
+
+Folders will call its subfolders' and files' GetSize method.

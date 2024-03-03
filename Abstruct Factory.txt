@@ -1,0 +1,119 @@
+Abstruct Factory:
+
+Purpose: Extension of Factory pattern. User preferences are given once at the beginning, multiple instance of 
+different class will be created according to this.
+
+C# Code:
+
+namespace DesignPattern
+{
+    interface iPizza
+    {
+        void Eat();
+    }
+
+    class VegPizza : iPizza
+    {
+        public void Eat()
+        {
+            Console.WriteLine("Eating veg pizza...");
+        }
+    }
+
+    class NonVegPizza : iPizza
+    {
+        public void Eat()
+        {
+            Console.WriteLine("Eating non veg pizza...");
+        }
+    }
+
+    interface iBurger
+    {
+        void Eat();
+    }
+
+    class VegBurger : iBurger
+    {
+        public void Eat()
+        {
+            Console.WriteLine("Eating veg burger...");
+        }
+    }
+
+    class NonVegBurger : iBurger
+    {
+        public void Eat()
+        {
+            Console.WriteLine("Eating non veg burger...");
+        }
+    }
+
+    interface iChef
+    {
+        iPizza PreparePizza();
+        iBurger PrepareBurger();
+    }
+
+    class VegChef : iChef
+    {
+        public iBurger PrepareBurger()
+        {
+            return new VegBurger();
+        }
+
+        public iPizza PreparePizza()
+        {
+            return new VegPizza();
+        }
+    }
+
+    class NonVegChef : iChef
+    {
+        public iBurger PrepareBurger()
+        {
+            return new NonVegBurger();
+        }
+
+        public iPizza PreparePizza()
+        {
+            return new NonVegPizza();
+        }
+    }
+
+    enum FoodType
+    {
+        Veg, 
+        NonVeg
+    }
+
+    class Waiter
+    {
+        private iChef chef;
+
+        public Waiter(FoodType type)
+        {
+            if(type == FoodType.Veg) chef = new VegChef();
+            else chef = new NonVegChef();
+        }
+        public iPizza GetPizza()
+        {
+            return chef.PreparePizza();
+        }
+
+        public iBurger GetBurger()
+        {
+            return chef.PrepareBurger();
+        }
+    }
+}
+
+using DesignPattern;
+
+Waiter waiter = new Waiter(FoodType.Veg); //Preferences is given initially
+
+iPizza pizza = waiter.GetPizza();
+pizza.Eat();
+
+iBurger burger = waiter.GetBurger();
+burger.Eat();

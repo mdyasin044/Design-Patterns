@@ -1,0 +1,67 @@
+Decorator:
+
+Purpose: Avoid multple class for combination of object. Instead implement addon classes.
+
+C# Code:
+
+namespace DesignPattern
+{
+    public interface IPizza
+    {
+        void Prepare();
+    }
+
+    public class BasePizza : IPizza
+    {
+        public void Prepare()
+        {
+            Console.WriteLine("Pizza prepared.");
+        }
+    }
+
+    public abstract class PizzaDecorator : IPizza
+    {
+        IPizza pizza;
+
+        public PizzaDecorator(IPizza pizza)
+        {
+            this.pizza = pizza;
+        }
+        public virtual void Prepare()
+        {
+            pizza.Prepare();
+        }
+    }
+
+    public class PepperoniPizza : PizzaDecorator
+    {
+        public PepperoniPizza(IPizza pizza) : base(pizza)
+        {
+        }
+
+        public override void Prepare()
+        {
+            
+            Console.WriteLine("Pepperoni toppings added.");
+            base.Prepare();
+        }
+    }
+
+    public class CapsicumPizza : PizzaDecorator
+    {
+        public CapsicumPizza(IPizza pizza) : base(pizza)
+        {
+        }
+
+        public override void Prepare()
+        {
+            Console.WriteLine("Capsicum toppings added.");
+            base.Prepare();
+        }
+    }
+}
+
+using DesignPattern;
+
+IPizza pizza = new CapsicumPizza(new PepperoniPizza(new BasePizza()));
+pizza.Prepare();

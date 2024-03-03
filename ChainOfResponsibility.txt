@@ -1,0 +1,124 @@
+Chain of Responsibility:
+
+Purpose: Decouple all responsibility in several classes.
+
+C# Code:
+
+namespace DesignPattern
+{
+    public class Database
+    {
+        public Dictionary<string, string> users;
+
+        public Database()
+        {
+            users = new Dictionary<string, string>
+            {
+                { "A", "1" },
+                { "B", "2" },
+                { "C", "3" }
+            };
+        }
+    }
+    public abstract class Handler
+    {
+        private Handler next;
+
+        public Handler SetNextHandler(Handler next)
+        {
+            this.next = next;
+            return next;
+        }
+
+        public abstract bool Handle(string username, string password);
+
+        protected bool HandleNext(string username, string password)
+        {
+            if (next == null) return true;
+            return next.Handle(username, password);
+        }
+    }
+
+    public class UserExistsHandler : Handler
+    {
+        private Database database;
+        public UserExistsHandler(Database database)
+        {
+            this.database = database;
+        }
+
+        public override bool Handle(string username, string password)
+        {
+            if(!database.users.ContainsKey(username)) {
+                Console.WriteLine("User not exists.");
+                return false;
+            }
+            Console.WriteLine("User exists.");
+            return HandleNext(username, password);
+        }
+    }
+
+    public class ValidPasswordHandler : Handler
+    {
+        private Database database;
+
+        public ValidPasswordHandler(Database database)
+        {
+            this.database = database;
+        }
+
+        public override bool Handle(string username, string password)
+        {
+            if(!database.users.ContainsKey(username) || database.users[username] != password)
+            {
+                Console.WriteLine("Password does not match.");
+                return false;
+            }
+            Console.WriteLine("Password does match.");
+            return HandleNext(username, password);
+        }
+    }
+
+    public class RollbackHandler : Handler
+    {
+        public RollbackHandler() { }
+
+        public override bool Handle(string username, string password)
+        {
+            Console.WriteLine("Rollback successful.");
+            return HandleNext(username, password);
+        }
+    }
+
+    public class AuthService
+    {
+        private Handler handler;
+
+        public AuthService(Handler handler)
+        {
+            this.handler = handler;
+        }
+
+        public bool Login(string username, string password)
+        {
+            if (handler.Handle(username, password))
+            {
+                Console.WriteLine("Authentication is successful.");
+                return true;
+            }
+            Console.WriteLine("Authentication is failed.");
+            return false;
+        }
+    }
+}
+
+using DesignPattern;
+
+Database database = new Database();
+
+Handler handler = new UserExistsHandler(database);
+handler.SetNextHandler(new ValidPasswordHandler(database))
+    .SetNextHandler(new RollbackHandler());
+
+AuthService service = new AuthService(handler);
+service.Login("B", "2");

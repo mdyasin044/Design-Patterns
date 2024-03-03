@@ -1,0 +1,76 @@
+Bridge:
+
+Purpose: Avoid multiple classes for combination objects like electric car etc. 
+Instead an property object is kept in a class like electric engine in car etc.
+
+C# Code:
+
+namespace DesignPattern
+{
+    public interface IEngine
+    {
+        public string Refill();
+    }
+
+    public class ElectricEngine : IEngine
+    {
+        public string Refill()
+        {
+            return "Charged to 100%";
+        }
+    }
+
+    public class PetrolEngine : IEngine
+    {
+        public string Refill()
+        {
+            return "Refilled with 5 litre";
+        }
+    }
+
+    public abstract class IVehicle
+    {
+        protected IEngine engine;
+
+        public IVehicle(IEngine engine)
+        {
+            this.engine = engine;
+        }
+
+        public abstract void Refill();
+    }
+
+    public class Car : IVehicle
+    {
+        public Car(IEngine engine):base(engine)
+        {
+
+        }
+
+        public override void Refill()
+        {
+            Console.WriteLine("Car " + engine.Refill());
+        }
+    }
+
+    public class Bike : IVehicle
+    {
+        public Bike(IEngine engine) : base(engine)
+        {
+
+        }
+
+        public override void Refill()
+        {
+            Console.WriteLine("Bike " + engine.Refill());
+        }
+    }
+}
+
+using DesignPattern;
+
+IVehicle car = new Car(new ElectricEngine());
+car.Refill();
+
+IVehicle bike = new Bike(new PetrolEngine());
+bike.Refill();
